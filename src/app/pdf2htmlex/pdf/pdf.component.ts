@@ -4,6 +4,7 @@ import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzCardComponent} from 'ng-zorro-antd/card';
 import {NzWaveDirective} from 'ng-zorro-antd/core/wave';
 import {PdfService} from '../../services/pdf.service';
+import {UploadResult} from '../../models/result';
 
 @Component({
   selector: 'app-pdf',
@@ -31,36 +32,47 @@ export class PdfComponent {
       i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  guid: string | undefined;
+  // guid: string | undefined;
+  result: UploadResult | undefined;
   executeCommand() {
     if(this.flag==="上传"){
       const file = this.file;
       if (!file) return;
       this.flag = "上传中...";
-      // 模拟上传过程，实际请替换成你的上传服务调用
       this.pdfService.uploadPdf(file)
         .then((result) => {
-          this.guid = result.fileName;
+          this.result = result;
           this.snackBar.open(`${file.name} 上传成功！`, '关闭', { duration: 3000 });
-          this.pdfService.executeTransfer(result).subscribe({
-            next: (msg) => {
-              this.message.emit(msg)
-            },
-            complete: () => {
-              this.snackBar.open(`${file.name} 转化成功！`, '关闭', { duration: 3000 });
-              this.flag = "下载";
-            }
-          })
+          this.pdf2Html(result);
         })
-        .catch(() => {
-          this.snackBar.open(`${file.name} 上传失败！`, '关闭', { duration: 3000 });
+        .catch((err) => {
+          this.snackBar.open(`${file.name} 上传失败！${err}`, '关闭', { duration: 3000 });
         })
         .finally(() => {
-          this.flag = "上传";
+          this.flag = "上传完成,执行中...";
         });
     }else if(this.flag==="下载"){
-      window.open(`/api/pdf2html/html/download/${this.guid}`, '_blank');
+      let pdfName = this.result?.fileName;
+      let pdfNameNoExtension = pdfName?.substring(0,pdfName?.lastIndexOf("."));
+      window.open(`/api/pdf2html/html/download/${this.result?.fileName}?fileName=${pdfNameNoExtension}.html`, '_blank');
+    }else if(this.flag==="再次执行"){
+      this.pdf2Html(this.result!)
     }
+  }
+  pdf2Html(result: UploadResult){
+    this.pdfService.executeTransfer(result).subscribe({
+      next: (msg) => {
+        this.message.emit(msg)
+      },
+      complete: () => {
+        this.snackBar.open(`${this.file!.name} 转化成功！`, '关闭', { duration: 3000 });
+        this.flag = "下载";
+      },
+      error: (err) => {
+        this.flag = "再次执行"
+        this.snackBar.open(`执行失败！${err}`, '关闭', { duration: 3000 });
+      }
+    })
   }
 
 }
