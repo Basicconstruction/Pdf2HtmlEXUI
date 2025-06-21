@@ -52,7 +52,7 @@ export class PdfComponent {
           this.flag = "上传完成,执行中...";
         });
     }else if(this.flag==="下载"){
-      let pdfName = this.result?.fileName;
+      let pdfName = this.result?.originalName;
       let pdfNameNoExtension = pdfName?.substring(0,pdfName?.lastIndexOf("."));
       window.open(`/api/pdf2html/html/download/${this.result?.fileName}?fileName=${pdfNameNoExtension}.html`, '_blank');
     }else if(this.flag==="再次执行"){
