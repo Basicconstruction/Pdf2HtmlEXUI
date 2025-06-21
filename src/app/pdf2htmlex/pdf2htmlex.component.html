@@ -1,0 +1,31 @@
+<nz-card>
+  <h2>选择 PDF 文件上传</h2>
+  <input class="my-2" nz-input [(ngModel)]="pdfService.token">
+  <input
+    type="file"
+    accept="application/pdf"
+    multiple
+    (change)="onFileSelected($event)"
+    id="fileInput"
+    hidden
+  />
+  <button class="mb-2" nz-button (click)="triggerFileSelect()">
+    选择 PDF 文件
+  </button>
+  <button class="mx-2" nz-button (click)="clearAll()">
+    清空
+  </button>
+  <app-wrap-panel direction="row" [spacing]="20">
+  @if(pdfFiles.length > 0){
+      @for(file of pdfFiles;track file){
+        <app-pdf [file]="file" (message)="display($event)">
+
+        </app-pdf>
+      }
+  }
+  </app-wrap-panel>
+  <textarea class="my-2" [(ngModel)]="messageBox" style="width: 100%;height: 300px">
+
+  </textarea>
+  <mat-snack-bar-container></mat-snack-bar-container>
+</nz-card>

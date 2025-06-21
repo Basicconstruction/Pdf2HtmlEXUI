@@ -1,0 +1,9 @@
+:host > div {
+  display: flex;
+}
+:host{
+  width: max-content;
+}
+.keepSize > *{
+  flex-shrink: 0;
+}

@@ -1,0 +1,15 @@
+<nz-card>
+  <div class="d-flex flex-column align-items-start">
+    @if(file){
+      <div >{{ file.name }}</div>
+      <div class="file-size">{{ formatBytes(file.size) }}</div>
+      <button
+        nz-button
+        [disabled]="!(flag === '上传' || flag === '下载')"
+        (click)="executeCommand()"
+      >
+        {{ flag }}
+      </button>
+    }
+  </div>
+</nz-card>
