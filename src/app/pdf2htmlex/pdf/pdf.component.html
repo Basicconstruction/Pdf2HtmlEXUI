@@ -3,13 +3,19 @@
     @if(file){
       <div >{{ file.name }}</div>
       <div class="file-size">{{ formatBytes(file.size) }}</div>
-      <button
-        nz-button
-        [disabled]="!(flag === '上传' || flag === '下载')"
-        (click)="executeCommand()"
-      >
-        {{ flag }}
-      </button>
+      <div class="d-flex justify-content-between">
+        <button
+          nz-button
+          [disabled]="!(flag === '上传' || flag === '下载' || flag ==='再次执行')"
+          (click)="executeCommand()"
+        >
+          {{ flag }}
+        </button>
+        @if(flag==="下载"){
+          <button nz-button class="mx-2" (click)="executeCSV()">处理布局文件</button>
+            <button class="mx-2" nz-button (click)="downloadLayout()">下载布局文件</button>
+        }
+      </div>
     }
   </div>
 </nz-card>

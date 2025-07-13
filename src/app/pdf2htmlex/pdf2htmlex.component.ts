@@ -8,6 +8,7 @@ import {PdfService} from '../services/pdf.service';
 import {HttpClient} from '@angular/common/http';
 import {NzInputDirective} from 'ng-zorro-antd/input';
 import {FormsModule} from '@angular/forms';
+import {Message} from '../models';
 @Component({
   selector: 'app-pdf2htmlex',
   imports: [
@@ -62,7 +63,13 @@ export class Pdf2htmlexComponent {
   }
 
 
-  display($event: string) {
-    this.messageBox = this.messageBox + $event;
+  display(message: Message) {
+    if(message.type === 0) {
+      this.messageBox = this.messageBox +  message.msg;
+    }
+    if(message.type === -1) {
+      this.messageBox = message.msg;
+    }
+
   }
 }

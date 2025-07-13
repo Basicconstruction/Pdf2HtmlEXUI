@@ -5,6 +5,8 @@ import {NzCardComponent} from 'ng-zorro-antd/card';
 import {NzWaveDirective} from 'ng-zorro-antd/core/wave';
 import {PdfService} from '../../services/pdf.service';
 import {UploadResult} from '../../models/result';
+import {LayoutService} from '../../services/layout.service';
+import {Message} from '../../models';
 
 @Component({
   selector: 'app-pdf',
@@ -21,8 +23,8 @@ export class PdfComponent {
   file: File | undefined;
   flag: string = "上传";
   @Output()
-  message: EventEmitter<string> = new EventEmitter();
-  constructor(private snackBar: MatSnackBar,private pdfService: PdfService) {
+  message: EventEmitter<Message> = new EventEmitter();
+  constructor(private snackBar: MatSnackBar,private pdfService: PdfService, private layoutService: LayoutService) {
 
   }
   formatBytes(bytes: number): string {
@@ -54,7 +56,7 @@ export class PdfComponent {
     }else if(this.flag==="下载"){
       let pdfName = this.result?.originalName;
       let pdfNameNoExtension = pdfName?.substring(0,pdfName?.lastIndexOf("."));
-      window.open(`/api/pdf2html/html/download/${this.result?.fileName}?fileName=${pdfNameNoExtension}.html`, '_blank');
+      window.open(`/api/download/html/${this.result?.fileName}?fileName=${pdfNameNoExtension}.html`, '_blank');
     }else if(this.flag==="再次执行"){
       this.pdf2Html(this.result!)
     }
@@ -62,7 +64,10 @@ export class PdfComponent {
   pdf2Html(result: UploadResult){
     this.pdfService.executeTransfer(result).subscribe({
       next: (msg) => {
-        this.message.emit(msg)
+        this.message.emit({
+          type: 0,
+          msg: msg,
+        })
       },
       complete: () => {
         this.snackBar.open(`${this.file!.name} 转化成功！`, '关闭', { duration: 3000 });
@@ -74,5 +79,16 @@ export class PdfComponent {
       }
     })
   }
-
+  async executeCSV(){
+    let layouts = await this.layoutService.getLayout(this.result?.fileName ?? "");
+    this.message.emit({
+      type: -1,
+      msg: JSON.stringify(layouts),
+    })
+  }
+  downloadLayout() {
+    let pdfName = this.result?.originalName;
+    let pdfNameNoExtension = pdfName?.substring(0,pdfName?.lastIndexOf("."));
+    window.open(`/api/download/csv/${this.result?.fileName}?fileName=${pdfNameNoExtension}.csv`, '_blank');
+  }
 }

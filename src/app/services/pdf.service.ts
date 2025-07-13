@@ -13,7 +13,7 @@ export class PdfService {
   }
   executeTransfer(result: UploadResult) {
     return new Observable<string>(observer => {
-      fetch(`/api/pdf2html/execute/${result.fileName}`, {
+      fetch(`/api/command/pdf2htmlex/${result.fileName}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
