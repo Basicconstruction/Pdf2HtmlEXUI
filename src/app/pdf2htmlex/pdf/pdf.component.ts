@@ -89,6 +89,6 @@ export class PdfComponent {
   downloadLayout() {
     let pdfName = this.result?.originalName;
     let pdfNameNoExtension = pdfName?.substring(0,pdfName?.lastIndexOf("."));
-    window.open(`/api/download/csv/${this.result?.fileName}?fileName=${pdfNameNoExtension}.csv`, '_blank');
+    window.open(`/api/download/json/${this.result?.fileName}?fileName=${pdfNameNoExtension}.json`, '_blank');
   }
 }

@@ -6,7 +6,8 @@ export interface Layout{
   Top: number;
 }
 export interface HtmlLayout{
-  pageWidth: number;
-  pageHeight: number;
-  layouts: Layout[];
+  pageId: number;
+  width: number;
+  height: number;
+  children: Layout[];
 }

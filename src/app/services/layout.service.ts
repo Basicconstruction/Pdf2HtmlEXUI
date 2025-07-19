@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {UploadResult} from '../models/result';
 import {HttpClient} from '@angular/common/http';
 import {HtmlLayout} from '../models';
 
@@ -11,10 +10,10 @@ export class LayoutService{
 
   }
   getLayout(guid: string){
-    return new Promise<HtmlLayout>((resolve, reject) => {
-      this.http.post<HtmlLayout>(`/api/command/html2layout/${guid}`, null)
+    return new Promise<HtmlLayout[]>((resolve, reject) => {
+      this.http.post<HtmlLayout[]>(`/api/command/html2layout/${guid}`, null)
         .subscribe({
-          next: (result: HtmlLayout) => {
+          next: (result: HtmlLayout[]) => {
             resolve(result);
           },
           error: error => {
